@@ -11,17 +11,11 @@ namespace StudentAdmissions.Controllers
     {
         private readonly StudentContext _context;
 
-        public StudentsController(StudentContext context)
-        {
-            _context = context;
-        }
+        public StudentsController(StudentContext context) => _context = context;
 
         // GET: api/Students
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Student>>> GetStudent()
-        {
-            return await _context.Student.ToListAsync();
-        }
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudent() => await _context.Student.ToListAsync();
 
         // GET: api/Students/5
         [HttpGet("{id}")]
@@ -29,10 +23,7 @@ namespace StudentAdmissions.Controllers
         {
             var student = await _context.Student.FindAsync(id);
 
-            if (student == null)
-            {
-                return NotFound("Incorrect Id passed");
-            }
+            if (student == null) return NotFound("Incorrect Id passed");
 
             return student;
         }
@@ -42,10 +33,7 @@ namespace StudentAdmissions.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudent(Guid id, Student student)
         {
-            if (id != student.Id)
-            {
-                return BadRequest();
-            }
+            if (id != student.Id) return BadRequest();
 
             _context.Entry(student).State = EntityState.Modified;
 
@@ -53,16 +41,12 @@ namespace StudentAdmissions.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!StudentExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
-                    throw;
-                }
+                    throw new Exception(ex.Message, ex);
             }
 
             return NoContent();
@@ -84,10 +68,7 @@ namespace StudentAdmissions.Controllers
         public async Task<IActionResult> DeleteStudent(Guid id)
         {
             var student = await _context.Student.FindAsync(id);
-            if (student == null)
-            {
-                return NotFound();
-            }
+            if (student == null) return NotFound();
 
             _context.Student.Remove(student);
             await _context.SaveChangesAsync();
@@ -95,9 +76,6 @@ namespace StudentAdmissions.Controllers
             return NoContent();
         }
 
-        private bool StudentExists(Guid id)
-        {
-            return _context.Student.Any(e => e.Id == id);
-        }
+        private bool StudentExists(Guid id) => _context.Student.Any(e => e.Id == id);
     }
 }
