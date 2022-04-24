@@ -31,7 +31,7 @@ namespace StudentAdmissions.Controllers
 
             if (student == null)
             {
-                return NotFound();
+                return NotFound("Incorrect Id passed");
             }
 
             return student;
